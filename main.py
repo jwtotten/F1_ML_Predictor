@@ -20,22 +20,25 @@ def load_driver_data(driver):
     return data
 
 def load_session_results(session):
-    results = session.results
+    results = session.results  ## todo: parse this info into a dataframe.
     return results[['DriverId', 'Abbreviation', 'TeamName', 'ClassifiedPosition', 'Points']]
 
-def plot_data(dataframe, axes):
+def plot_data(dataframe, axes, race, year, session_type):
     for index, axis in enumerate(axes):
         driver_data = dataframe[dataframe['Driver'] == drivers[index]]
         axis.plot(driver_data['Time'], driver_data['Speed'], label=drivers[index], **driver_colours[index])
-        axis.set_title(f'{drivers[index]} Speed during Monaco 2023 Race')
+        axis.set_title(f'{drivers[index]} Speed during {race} {year} {session_type}')
         axis.set_xlabel('Time (s)')
         axis.set_ylabel('Speed (km/h)')
         axis.legend()
 
 if __name__ == "__main__":
     fastf1.plotting.setup_mpl(mpl_timedelta_support=False, color_scheme='fastf1')
-
-    session = load_session_data(2023, 'Monaco', 'Race')
+    
+    race = 'Singapore'
+    year = 2024
+    session_type = 'Race'
+    session = load_session_data(year, race, session_type)
     results = load_session_results(session)
     print("\nSession Results:")
     print(results)
@@ -53,8 +56,8 @@ if __name__ == "__main__":
 
     fig, ax = plt.subplots(3, 2, figsize=(16, 8))
     ax = ax.flatten()
-    
-    plot_data(dataframe, ax)
+
+    plot_data(dataframe, ax, race, year, session_type)
     plt.tight_layout()
 
     print("\nStatistical Summary:")
