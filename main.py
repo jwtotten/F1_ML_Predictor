@@ -1,4 +1,5 @@
 import fastf1
+import fastf1.plotting
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -6,30 +7,11 @@ import pandas as pd
 session = fastf1.get_session(2023, 'Monaco', 'Q')
 session.load()
 
-lec = session.laps.pick_driver('LEC').pick_fastest()
-ham = session.laps.pick_driver('HAM').pick_fastest()
-lec_car_data = lec.get_car_data()
-ham_car_data = ham.get_car_data()
-
-t_lec = lec_car_data['Time']
-v_lec = lec_car_data['Speed']
-t_ham = ham_car_data['Time']
-v_ham = ham_car_data['Speed']
-
-fig, ax = plt.subplots()
-ax.plot(t_lec, v_lec, label='Leclerc', color='red')
-ax.plot(t_ham, v_ham, label='Hamilton', color='blue')
-ax.set_xlabel('Time (s)')
-ax.set_ylabel('Speed (km/h)')
-ax.set_title('Leclerc and Hamilton Speed during Monaco 2023 Qualifying')
-ax.legend()
-plt.show()  
-
 if __name__ == "__main__":
-    
+    fastf1.plotting.setup_mpl(mpl_timedelta_support=False, color_scheme='fastf1')
 
     drivers = ['VER', 'PER', 'LEC', 'SAI', 'HAM', 'RUS']
-
+    driver_colours = []
     dataframe = pd.DataFrame()
 
     for driver in drivers:
@@ -37,9 +19,21 @@ if __name__ == "__main__":
         car_data = lap.get_car_data()
         time = car_data['Time']
         speed = car_data['Speed']
+        style = fastf1.plotting.get_driver_style(identifier=driver, style=['color', 'linestyle'], session=session)
         data = {'Time': time, 'Speed': speed, 'Driver': driver}
         dataframe = pd.concat([dataframe, pd.DataFrame(data)], ignore_index=True)
+        driver_colours.append(style)
 
-    fig, ax = plt.subplots(3, 2)
+    fig, ax = plt.subplots(3, 2, figsize=(16, 8))
     ax = ax.flatten()
     
+    for index, axis in enumerate(ax):
+        driver_data = dataframe[dataframe['Driver'] == drivers[index]]
+        axis.plot(driver_data['Time'], driver_data['Speed'], label=drivers[index], **driver_colours[index])
+        axis.set_title(f'{driver} Speed during Monaco 2023 Qualifying')
+        axis.set_xlabel('Time (s)')
+        axis.set_ylabel('Speed (km/h)')
+        axis.legend()
+    plt.tight_layout()
+    plt.show()
+
