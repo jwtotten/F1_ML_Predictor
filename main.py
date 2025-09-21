@@ -7,6 +7,17 @@ import pandas as pd
 session = fastf1.get_session(2023, 'Monaco', 'Q')
 session.load()
 
+def load_driver_data(driver):
+    lap = session.laps.pick_driver(driver).pick_fastest()
+    car_data = lap.get_car_data()
+    time = car_data['Time']
+    speed = car_data['Speed']
+    style = fastf1.plotting.get_driver_style(identifier=driver, style=['color', 'linestyle'], session=session)
+    data = {'Time': time, 'Speed': speed, 'Driver': driver}
+    driver_colours.append(style)
+    return data
+
+
 if __name__ == "__main__":
     fastf1.plotting.setup_mpl(mpl_timedelta_support=False, color_scheme='fastf1')
 
@@ -15,14 +26,7 @@ if __name__ == "__main__":
     dataframe = pd.DataFrame()
 
     for driver in drivers:
-        lap = session.laps.pick_driver(driver).pick_fastest()
-        car_data = lap.get_car_data()
-        time = car_data['Time']
-        speed = car_data['Speed']
-        style = fastf1.plotting.get_driver_style(identifier=driver, style=['color', 'linestyle'], session=session)
-        data = {'Time': time, 'Speed': speed, 'Driver': driver}
-        dataframe = pd.concat([dataframe, pd.DataFrame(data)], ignore_index=True)
-        driver_colours.append(style)
+        dataframe = pd.concat([dataframe, pd.DataFrame(load_driver_data(driver))], ignore_index=True)
 
     fig, ax = plt.subplots(3, 2, figsize=(16, 8))
     ax = ax.flatten()
