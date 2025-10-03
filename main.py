@@ -20,8 +20,12 @@ def load_driver_data(driver):
     return data
 
 def load_session_results(session):
-    results = session.results  ## todo: parse this info into a dataframe.
-    return results[['DriverId', 'Abbreviation', 'TeamName', 'ClassifiedPosition', 'Points']]
+    results = session.results
+    result = {'Abbreviation': results['Abbreviation'].to_list(),
+              'TeamName': results['TeamName'].to_list(),
+              'ClassifiedPosition': results['ClassifiedPosition'].to_list(),
+              'Points': results['Points'].to_list(),}
+    return result
 
 def plot_data(dataframe, axes, race, year, session_type):
     for index, axis in enumerate(axes):
@@ -35,13 +39,20 @@ def plot_data(dataframe, axes, race, year, session_type):
 if __name__ == "__main__":
     fastf1.plotting.setup_mpl(mpl_timedelta_support=False, color_scheme='fastf1')
     
-    race = 'Singapore'
-    year = 2024
-    session_type = 'Race'
-    session = load_session_data(year, race, session_type)
-    results = load_session_results(session)
+    years = [2022, 2023, 2024]
+    results = []
+    for year in years:
+        race = 'Singapore'
+        session_type = 'Race'
+        session = load_session_data(year, race, session_type)
+        session_result = load_session_results(session)
+        session_result['Year'] = year
+        results.append(session_result)
+
     print("\nSession Results:")
-    print(results)
+    for res in results:
+        print(res.items())
+        print("\n")
 
     drivers = ['VER', 'PER', 'LEC', 'SAI', 'HAM', 'RUS']
     driver_colours = []
@@ -50,6 +61,12 @@ if __name__ == "__main__":
     for driver in drivers:
         dfs = [pd.DataFrame(load_driver_data(driver))]
         dataframe = pd.concat([dataframe, *dfs], ignore_index=True)
+    
+    for index, result in enumerate(results):
+        if drivers[index] in result['Abbreviation']:
+            driver_data = pd.DataFrame(result)
+            print(f"\nDriver Data for {drivers[index]}: {driver_data}")
+            dataframe = pd.concat([dataframe, driver_data], ignore_index=True)
 
     print("\nDriver Data Loaded:")
     print(dataframe.columns.values)
