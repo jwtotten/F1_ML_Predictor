@@ -70,6 +70,7 @@ if __name__ == "__main__":
 
     print("\nDriver Data Loaded:")
     print(dataframe.columns.values)
+    print(dataframe.head(5))
 
     fig, ax = plt.subplots(3, 2, figsize=(16, 8))
     ax = ax.flatten()
