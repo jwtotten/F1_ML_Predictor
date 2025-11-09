@@ -3,6 +3,7 @@ import fastf1.plotting
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import streamlit as st
 
 def load_session_data(year, grand_prix, session_type):
     session = fastf1.get_session(year, grand_prix, session_type)
@@ -84,5 +85,8 @@ if __name__ == "__main__":
         print(dataframe[dataframe['Driver'] == driver].describe())
         print("\n")
 
-    plt.show()
+    # plt.show()
+    st.write("# F1 Speed Data Visualization")
+    st.pyplot(fig)
+    
 
