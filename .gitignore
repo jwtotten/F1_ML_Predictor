@@ -2,3 +2,4 @@
 .github
 .DS_Store
 utils/__pycache__
+methods/__pycache__
