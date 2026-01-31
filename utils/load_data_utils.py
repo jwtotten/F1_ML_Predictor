@@ -20,3 +20,9 @@ def load_session_data(year, grand_prix, session_type):
     session = fastf1.get_session(year, grand_prix, session_type)
     session.load()
     return session
+
+def select_race_data(race_data_list, race_choice: str):
+    for race_result in race_data_list:
+            if race_choice in race_result:
+                return race_result[race_choice]
+    return None
