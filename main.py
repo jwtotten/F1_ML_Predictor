@@ -80,17 +80,26 @@ class RaceDataAnalyzer:
             table.add_row(driver, position, points)
         self.rich_console.print(table)
 
+        restart = questionary.confirm("Would you like to analyze another race?").ask()
+        return restart
+
 
 if __name__ == "__main__":
     
     race_analyzer = RaceDataAnalyzer()
-    season_choice = race_analyzer.select_season()
-    all_race_event_data = race_analyzer.load_all_season_race_info()
-    logger.info(f"Loaded data for {race_analyzer.season_choice} season:")
-    for events in all_race_event_data[:5]: 
-        logger.info(f"Round {events.get('RoundNumber')}: {events.get('EventName')}")
-    all_race_data = race_analyzer.load_all_race_data(all_race_event_data)
+    restart = False
+    while True:
+        
+        season_choice = race_analyzer.select_season()
+        all_race_event_data = race_analyzer.load_all_season_race_info()
+        logger.info(f"Loaded data for {race_analyzer.season_choice} season:")
+        for events in all_race_event_data[:5]: 
+            logger.info(f"Round {events.get('RoundNumber')}: {events.get('EventName')}")
+        all_race_data = race_analyzer.load_all_race_data(all_race_event_data)
 
-    logger.info("Race data loading complete.")
-    race_choice = race_analyzer.select_race()
-    race_analyzer.present_tabulated_race_data()
+        logger.info("Race data loading complete.")
+        race_choice = race_analyzer.select_race()
+        restart = race_analyzer.present_tabulated_race_data()
+        if not restart:
+            break
+        
