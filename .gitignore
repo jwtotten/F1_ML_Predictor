@@ -1,5 +1,4 @@
 /venv
 .github
 .DS_Store
-utils/__pycache__
-methods/__pycache__
+__pycache__/
