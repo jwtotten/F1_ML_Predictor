@@ -78,3 +78,7 @@ class RaceDataAnalyzer:
 
         restart = questionary.confirm("Would you like to analyze another race?").ask()
         return restart
+
+    def _return_race_data(self):
+        _race_data = select_race_data(self.race_data, self.race_choice)
+        return _race_data

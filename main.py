@@ -23,3 +23,14 @@ if __name__ == "__main__":
         restart = race_analyzer.present_tabulated_race_data()
         if not restart:
             break
+
+    linear_model_predictor = MLPredictor()
+    race_data = race_analyzer._return_race_data()
+
+    training_data = [[driver, results["Position"]] for driver, results in race_data.items()]
+    
+    print("Training Linear Regression Model...")
+    print(f"Training Data: {training_data}")
+    linear_model_predictor.train(training_data, [0, 1, 2])
+    coefficients = linear_model_predictor.return_model_coefficients()
+    print(f"Model Coefficients: {coefficients}")
