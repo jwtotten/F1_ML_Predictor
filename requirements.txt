@@ -33,3 +33,5 @@ urllib3==2.5.0
 websockets==13.1
 questionary
 rich
+asciichartpy
+fastf1

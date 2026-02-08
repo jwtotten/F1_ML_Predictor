@@ -1,5 +1,6 @@
 from rich.table import Table
 from rich.console import Console
+import asciichartpy as ac
 import questionary
 from typing import List, Dict, Any
 
@@ -89,3 +90,43 @@ class RaceDataAnalyzer:
 
     def _return_race_data(self):
         return self._get_selected_race_data()
+    
+    @reset_view
+    def plot_driver_season_results(self, data: List[list]) -> None:
+        """
+        Plot driver finishing positions throughout the season as an ASCII line graph.
+        
+        :param data: List of [race_number, finishing_position] pairs
+        :type data: List[List[int, float]]
+        """
+        finishing_positions: List[float] = [result[1] for result in data]
+        race_numbers = [result[0] for result in data]
+
+        chart = ac.plot(
+            finishing_positions, 
+            {
+                'title': 'Driver Finishing Positions Over the Season',
+                'height': 10,
+                'width': 80,  # Increased width to ensure x-axis labels fit
+                'xAxis': race_numbers
+            }
+        )
+        print(chart)
+
+    
+    def season_results_for_driver(self, driver_code: str) -> List[Dict[str, Any]]:
+        """
+        Return a list of race results for a given driver across the selected season.
+
+        :param driver_code: The three-letter code representing the driver (e.g., 'VER' for Max Verstappen).
+        :type driver_code: str
+
+        :return: A list of dictionaries containing the event name, position, and points for each race
+        :rtype: List[Dict[str, Any]]
+        """
+        results = []
+        for race in self.race_data:
+            for index, (_, race_info) in enumerate(race.items()):
+                if driver_code in race_info:
+                    results.append([index + 1, race_info[driver_code]["Position"]])
+        return results
