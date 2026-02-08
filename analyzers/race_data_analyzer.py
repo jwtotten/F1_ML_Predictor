@@ -1,14 +1,18 @@
 from rich.table import Table
 from rich.console import Console
 import questionary
+from typing import List, Dict, Any
 
 from utils import load_session_data, load_event_schedule, load_race_event, select_race_data, build_race_result_table_header
 from methods import collect_all_race_info_by_season
 
+SUPPORTED_DRIVERS = ['VER', 'PER', 'LEC', 'SAI', 'HAM', 'RUS']
+SUPPORTED_SEASONS = ['2022', '2023', '2024', '2025']
+
 class RaceDataAnalyzer:
     def __init__(self):
-        self.drivers = ['VER', 'PER', 'LEC', 'SAI', 'HAM', 'RUS']
-        self.seasons = ['2022', '2023', '2024', '2025']
+        self.drivers = SUPPORTED_DRIVERS
+        self.seasons = SUPPORTED_SEASONS
         self.rich_console = Console()
 
     def display_app_name(self):
@@ -26,6 +30,7 @@ class RaceDataAnalyzer:
 
         print(welcome_message)
     
+    @staticmethod
     def reset_view(func):
         def wrapper(self, *args, **kwargs):
             # clear the terminal
@@ -36,7 +41,7 @@ class RaceDataAnalyzer:
         return wrapper
     
     @reset_view
-    def select_season(self):       
+    def select_season(self) -> str:       
 
         self.season_choice = questionary.select(
             "Select the year for analysis:",
@@ -45,12 +50,12 @@ class RaceDataAnalyzer:
 
         return self.season_choice
     
-    def load_all_season_race_info(self):
+    def load_all_season_race_info(self) -> List[Dict[str, Any]]:
         event_schedule = load_event_schedule(int(self.season_choice))
         all_event_data = collect_all_race_info_by_season(event_schedule)
         return all_event_data
 
-    def load_all_race_data(self, all_event_data: list[dict]):
+    def load_all_race_data(self, all_event_data: List[Dict[str, Any]]) -> List:
         self.race_data = []
         self.event_names = []
         for event in all_event_data:
@@ -59,26 +64,28 @@ class RaceDataAnalyzer:
         return self.race_data
     
     @reset_view
-    def select_race(self):
+    def select_race(self) -> str:
 
         self.race_choice = questionary.select(
             "Select the race you want to analyze:",
             choices=self.event_names
         ).ask()
     
+    def _get_selected_race_data(self):
+        """Retrieve data for the currently selected race."""
+        return select_race_data(self.race_data, self.race_choice)
+
     @reset_view
-    def present_tabulated_race_data(self):
+    def present_tabulated_race_data(self) -> str:
         table = build_race_result_table_header(self.race_choice, self.season_choice)
-        _race_data = select_race_data(self.race_data, self.race_choice)
+        _race_data = self._get_selected_race_data()
         for driver, data in _race_data.items():
             position = str(data["Position"])
             points = str(data["Points"])
             table.add_row(driver, position, points)
         self.rich_console.print(table)
-
         restart = questionary.confirm("Would you like to analyze another race?").ask()
         return restart
 
     def _return_race_data(self):
-        _race_data = select_race_data(self.race_data, self.race_choice)
-        return _race_data
+        return self._get_selected_race_data()
