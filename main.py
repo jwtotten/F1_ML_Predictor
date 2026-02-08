@@ -6,15 +6,13 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 if __name__ == "__main__":
-    
     race_analyzer = RaceDataAnalyzer()
     restart = False
     while True:
-        
         season_choice = race_analyzer.select_season()
         all_race_event_data = race_analyzer.load_all_season_race_info()
         logger.info(f"Loaded data for {race_analyzer.season_choice} season:")
-        for events in all_race_event_data[:5]: 
+        for events in all_race_event_data[:5]:
             logger.info(f"Round {events.get('RoundNumber')}: {events.get('EventName')}")
         all_race_data = race_analyzer.load_all_race_data(all_race_event_data)
 

@@ -35,3 +35,4 @@ questionary
 rich
 asciichartpy
 fastf1
+tqdm

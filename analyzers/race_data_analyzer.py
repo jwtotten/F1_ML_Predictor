@@ -4,10 +4,17 @@ import asciichartpy as ac
 import questionary
 from typing import List, Dict, Any
 
-from utils import load_session_data, load_event_schedule, load_race_event, select_race_data, build_race_result_table_header
+from utils import (
+    load_session_data,
+    load_event_schedule,
+    load_race_event,
+    select_race_data,
+    build_race_result_table_header,
+)
 
-SUPPORTED_DRIVERS = ['VER', 'PER', 'LEC', 'SAI', 'HAM', 'RUS']
-SUPPORTED_SEASONS = ['2022', '2023', '2024', '2025']
+SUPPORTED_DRIVERS = ["VER", "PER", "LEC", "SAI", "HAM", "RUS"]
+SUPPORTED_SEASONS = ["2022", "2023", "2024", "2025"]
+
 
 class RaceDataAnalyzer:
     def __init__(self):
@@ -16,7 +23,6 @@ class RaceDataAnalyzer:
         self.rich_console = Console()
 
     def display_app_name(self):
-        
         welcome_message = """
 
         ███████╗ ██╗     █████╗ ███╗   ██╗ █████╗ ██╗  ██╗   ██╗███████╗███████╗██████╗ 
@@ -29,7 +35,7 @@ class RaceDataAnalyzer:
         """
 
         print(welcome_message)
-    
+
     @staticmethod
     def reset_view(func):
         def wrapper(self, *args, **kwargs):
@@ -38,18 +44,17 @@ class RaceDataAnalyzer:
             # Print the app name
             self.display_app_name()
             return func(self, *args, **kwargs)
-        return wrapper
-    
-    @reset_view
-    def select_season(self) -> str:       
 
+        return wrapper
+
+    @reset_view
+    def select_season(self) -> str:
         self.season_choice = questionary.select(
-            "Select the year for analysis:",
-            choices=self.seasons
+            "Select the year for analysis:", choices=self.seasons
         ).ask()
 
         return self.season_choice
-    
+
     def load_all_season_race_info(self) -> List[Dict[str, Any]]:
         event_schedule = load_event_schedule(int(self.season_choice))
         all_event_data = self.collect_all_race_info_by_season(event_schedule)
@@ -60,17 +65,21 @@ class RaceDataAnalyzer:
         self.event_names = []
         for event in all_event_data:
             self.event_names.append(event["EventName"])
-            self.race_data.append({event["EventName"]: load_race_event(int(self.season_choice), event["EventName"])})
+            self.race_data.append(
+                {
+                    event["EventName"]: load_race_event(
+                        int(self.season_choice), event["EventName"]
+                    )
+                }
+            )
         return self.race_data
-    
+
     @reset_view
     def select_race(self) -> str:
-
         self.race_choice = questionary.select(
-            "Select the race you want to analyze:",
-            choices=self.event_names
+            "Select the race you want to analyze:", choices=self.event_names
         ).ask()
-    
+
     def _get_selected_race_data(self):
         """Retrieve data for the currently selected race."""
         return select_race_data(self.race_data, self.race_choice)
@@ -89,12 +98,12 @@ class RaceDataAnalyzer:
 
     def _return_race_data(self):
         return self._get_selected_race_data()
-    
+
     @reset_view
     def plot_driver_season_results(self, data: List[list]) -> None:
         """
         Plot driver finishing positions throughout the season as an ASCII line graph.
-        
+
         :param data: List of [race_number, finishing_position] pairs
         :type data: List[List[int, float]]
         """
@@ -102,13 +111,13 @@ class RaceDataAnalyzer:
         race_numbers = [result[0] for result in data]
 
         chart = ac.plot(
-            finishing_positions, 
+            finishing_positions,
             {
-                'title': 'Driver Finishing Positions Over the Season',
-                'height': 10,
-                'width': 80,  # Increased width to ensure x-axis labels fit
-                'xAxis': race_numbers
-            }
+                "title": "Driver Finishing Positions Over the Season",
+                "height": 10,
+                "width": 80,  # Increased width to ensure x-axis labels fit
+                "xAxis": race_numbers,
+            },
         )
         print(chart + "\n\n")
 
@@ -117,12 +126,11 @@ class RaceDataAnalyzer:
         all_event_data = []
         for _, event in event_schedule.iterrows():
             event_name, round_number = event["EventName"], event["RoundNumber"]
-            all_event_data.append({
-                "EventName": event_name,
-                "RoundNumber": round_number
-                })
+            all_event_data.append(
+                {"EventName": event_name, "RoundNumber": round_number}
+            )
         return all_event_data
-    
+
     def _season_results_for_driver(self, driver_code: str) -> List[Dict[str, Any]]:
         """
         Return a list of race results for a given driver across the selected season.
