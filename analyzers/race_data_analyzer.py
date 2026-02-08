@@ -123,7 +123,7 @@ class RaceDataAnalyzer:
                 })
         return all_event_data
     
-    def season_results_for_driver(self, driver_code: str) -> List[Dict[str, Any]]:
+    def _season_results_for_driver(self, driver_code: str) -> List[Dict[str, Any]]:
         """
         Return a list of race results for a given driver across the selected season.
 
@@ -139,3 +139,19 @@ class RaceDataAnalyzer:
                 if driver_code in race_info:
                     results.append([race_index + 1, race_info[driver_code]["Position"]])
         return results
+
+    def present_driver_season_results(self, driver_code: str) -> None:
+        """
+        Present the season results for a given driver in a tabulated format.
+
+        :param driver_code: The three-letter code representing the driver (e.g., 'VER' for Max Verstappen).
+        :type driver_code: str
+        """
+        table = Table(title=f"{self.season_choice} Season Results for {driver_code}")
+        table.add_column("Race Number", justify="center")
+        table.add_column("Position", justify="center")
+        season_results = self._season_results_for_driver(driver_code)
+        race_number = [i for i in range(1, len(season_results) + 1)]
+        for i in range(len(season_results)):
+            table.add_row(str(race_number[i]), str(season_results[i][1]))
+        self.rich_console.print(table)

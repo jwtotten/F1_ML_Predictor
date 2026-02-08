@@ -25,12 +25,16 @@ if __name__ == "__main__":
             break
 
     linear_model_predictor = MLPredictor()
-    race_data = race_analyzer._return_race_data()
+    race_data_for_lec: list = race_analyzer._season_results_for_driver("LEC")
 
-    training_data = [[driver, results["Position"]] for driver, results in race_data.items()]
-    
+    race_analyzer.plot_driver_season_results(race_data_for_lec)
+    race_analyzer.present_driver_season_results("LEC")
+
+    training_data = race_data_for_lec[0:-2]
+    validation_data = race_data_for_lec[-2:]
+
     print("Training Linear Regression Model...")
     print(f"Training Data: {training_data}")
-    linear_model_predictor.train(training_data, [0, 1, 2])
+    linear_model_predictor.train(training_data)
     coefficients = linear_model_predictor.return_model_coefficients()
     print(f"Model Coefficients: {coefficients}")
