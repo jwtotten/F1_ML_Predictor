@@ -1,1 +1,0 @@
-from .collect_all_event_data_by_season import collect_all_race_info_by_season

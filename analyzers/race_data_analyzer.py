@@ -5,7 +5,6 @@ import questionary
 from typing import List, Dict, Any
 
 from utils import load_session_data, load_event_schedule, load_race_event, select_race_data, build_race_result_table_header
-from methods import collect_all_race_info_by_season
 
 SUPPORTED_DRIVERS = ['VER', 'PER', 'LEC', 'SAI', 'HAM', 'RUS']
 SUPPORTED_SEASONS = ['2022', '2023', '2024', '2025']
@@ -53,7 +52,7 @@ class RaceDataAnalyzer:
     
     def load_all_season_race_info(self) -> List[Dict[str, Any]]:
         event_schedule = load_event_schedule(int(self.season_choice))
-        all_event_data = collect_all_race_info_by_season(event_schedule)
+        all_event_data = self.collect_all_race_info_by_season(event_schedule)
         return all_event_data
 
     def load_all_race_data(self, all_event_data: List[Dict[str, Any]]) -> List:
@@ -113,6 +112,16 @@ class RaceDataAnalyzer:
         )
         print(chart)
 
+    @staticmethod
+    def collect_all_race_info_by_season(event_schedule):
+        all_event_data = []
+        for _, event in event_schedule.iterrows():
+            event_name, round_number = event["EventName"], event["RoundNumber"]
+            all_event_data.append({
+                "EventName": event_name,
+                "RoundNumber": round_number
+                })
+        return all_event_data
     
     def season_results_for_driver(self, driver_code: str) -> List[Dict[str, Any]]:
         """
