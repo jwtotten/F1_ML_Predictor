@@ -1,1 +1,1 @@
-from .race_data_analyzer import RaceDataAnalyzer
+from .race_data_analyzer import RaceDataAnalyzer as RaceDataAnalyzer

@@ -1,6 +1,6 @@
 from sklearn import linear_model
 from sklearn.utils.validation import check_consistent_length
-from typing import List, Optional, Union
+from typing import List, Optional
 
 
 class MLPredictor:

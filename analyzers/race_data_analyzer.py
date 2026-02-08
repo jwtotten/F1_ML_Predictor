@@ -5,7 +5,6 @@ import questionary
 from typing import List, Dict, Any
 
 from utils import (
-    load_session_data,
     load_event_schedule,
     load_race_event,
     select_race_data,

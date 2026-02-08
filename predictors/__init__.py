@@ -1,1 +1,1 @@
-from .ml_predictor import MLPredictor
+from .ml_predictor import MLPredictor as MLPredictor
