@@ -110,7 +110,7 @@ class RaceDataAnalyzer:
                 'xAxis': race_numbers
             }
         )
-        print(chart)
+        print(chart + "\n\n")
 
     @staticmethod
     def collect_all_race_info_by_season(event_schedule):
@@ -134,8 +134,8 @@ class RaceDataAnalyzer:
         :rtype: List[Dict[str, Any]]
         """
         results = []
-        for race in self.race_data:
-            for index, (_, race_info) in enumerate(race.items()):
+        for race_index, race in enumerate(self.race_data):
+            for _, race_info in race.items():
                 if driver_code in race_info:
-                    results.append([index + 1, race_info[driver_code]["Position"]])
+                    results.append([race_index + 1, race_info[driver_code]["Position"]])
         return results
