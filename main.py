@@ -36,3 +36,11 @@ if __name__ == "__main__":
     linear_model_predictor.train(training_data)
     coefficients = linear_model_predictor.return_model_coefficients()
     print(f"Model Coefficients: {coefficients}")
+
+    ## TODO: Clean the data model to fit the random forest regression input.
+
+    print("Training Random Forest Regression Model...")
+    print(f"Training Data: {training_data}")
+    linear_model_predictor.train_rf(training_data)
+    rf_prediction = linear_model_predictor.return_rf_model_prediction(validation_data)
+    print(f"Random Forest Model Prediction: {rf_prediction}")
