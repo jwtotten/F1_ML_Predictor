@@ -2,12 +2,13 @@ from sklearn import linear_model
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.utils.validation import check_consistent_length
 from typing import List, Optional
+import numpy as np
 
 
 class MLPredictor:
     def __init__(self):
         self.model = linear_model.LinearRegression()
-        self.rfregressor = RandomForestRegressor(n_estimators=100, random_state=42, verbose=1)
+        self.rfregressor = RandomForestRegressor(n_estimators=1, random_state=42, verbose=1)
 
     ## These are the linear regression methods
 
@@ -69,6 +70,8 @@ class MLPredictor:
                 f"Inconsistent lengths: X has {len(x)} samples, but y has {len(y)} labels."
             ) from e
 
+        # Reshape x to 2D array (required by scikit-learn)
+        x = np.array(x).reshape(-1, 1)
         self.rfregressor.fit(x, y)
     
     def return_rf_model_prediction(self, data: List[list]) -> list:
@@ -80,4 +83,7 @@ class MLPredictor:
         :return: Predictions of the trained random forest regression model.
         :rtype: list
         """
-        return self.rfregressor.predict(data)
+        # Extract first element from each data point and reshape to 2D
+        x = [item[0] for item in data]
+        x = np.array(x).reshape(-1, 1)
+        return self.rfregressor.predict(x)

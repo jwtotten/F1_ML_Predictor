@@ -1,6 +1,7 @@
 import logging
 from analyzers import RaceDataAnalyzer
 from predictors import MLPredictor
+import numpy as np
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -44,3 +45,4 @@ if __name__ == "__main__":
     linear_model_predictor.train_rf(training_data)
     rf_prediction = linear_model_predictor.return_rf_model_prediction(validation_data)
     print(f"Random Forest Model Prediction: {rf_prediction}")
+    print(f"Actual Validation Data: {np.array(validation_data).reshape(-1, 1)}")
