@@ -49,3 +49,7 @@ class MLPredictor:
             )
         
         return self.rfregressor.predict(x)
+
+"""
+I should not be predicting the remainder of the races in one go, but rather iteratively, predicting the next race and using that to then further predict the next one, and so on. This way I can also update the model with the actual result after each race, which should improve the accuracy of the predictions as the season progresses.
+"""
