@@ -3,23 +3,26 @@ from rich.console import Console
 import asciichartpy as ac
 import questionary
 from typing import List, Dict, Any
+import os
 
 from utils import (
     load_event_schedule,
     load_race_event,
     select_race_data,
     build_race_result_table_header,
+    set_cache
 )
 
 SUPPORTED_DRIVERS = ["VER", "PER", "LEC", "SAI", "HAM", "RUS"]
 SUPPORTED_SEASONS = ["2022", "2023", "2024", "2025"]
-
+_CACHE_REL_DIR: str = "data/cache"
 
 class RaceDataAnalyzer:
     def __init__(self):
         self.drivers = SUPPORTED_DRIVERS
         self.seasons = SUPPORTED_SEASONS
         self.rich_console = Console()
+        set_cache(_CACHE_REL_DIR)
 
     def display_app_name(self):
         welcome_message = """

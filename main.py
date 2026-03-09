@@ -23,7 +23,7 @@ if __name__ == "__main__":
         if not restart:
             break
 
-    linear_model_predictor = MLPredictor()
+    model_predictor = MLPredictor()
     race_data_for_lec: list = race_analyzer._season_results_for_driver("LEC")
 
     race_analyzer.plot_driver_season_results(race_data_for_lec)
@@ -32,17 +32,10 @@ if __name__ == "__main__":
     training_data = race_data_for_lec[0:-2]
     validation_data = race_data_for_lec[-2:]
 
-    print("Training Linear Regression Model...")
-    print(f"Training Data: {training_data}")
-    linear_model_predictor.train(training_data)
-    coefficients = linear_model_predictor.return_model_coefficients()
-    print(f"Model Coefficients: {coefficients}")
-
-    ## TODO: Clean the data model to fit the random forest regression input.
-
     print("Training Random Forest Regression Model...")
     print(f"Training Data: {training_data}")
-    linear_model_predictor.train_rf(training_data)
-    rf_prediction = linear_model_predictor.return_rf_model_prediction(validation_data)
+    print(f"Validation Data: {validation_data}")
+    model_predictor.train_rf(training_data)
+    rf_prediction = model_predictor.return_rf_model_prediction(validation_data)
     print(f"Random Forest Model Prediction: {rf_prediction}")
     print(f"Actual Validation Data: {np.array(validation_data).reshape(-1, 1)}")
