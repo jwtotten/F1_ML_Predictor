@@ -3,7 +3,7 @@ import os
 import logging
 
 # Suppress FastF1 info logs
-# logging.getLogger("fastf1").setLevel(logging.WARNING)
+logging.getLogger("fastf1").setLevel(logging.WARNING)
 
 def set_cache(cache_dir: str):
     cache_path = os.path.join(os.getcwd(), cache_dir)

@@ -116,12 +116,15 @@ class RaceDataAnalyzer:
             finishing_positions,
             {
                 "title": "Driver Finishing Positions Over the Season",
-                "height": 10,
-                "width": 80,  # Increased width to ensure x-axis labels fit
+                "height": 20,
+                "width": 100,  # Increased width to ensure x-axis labels fit
                 "xAxis": race_numbers,
             },
         )
+        print('\n')
+        print('Race Finishing Position vs Race Number:')
         print(chart + "\n\n")
+
 
     @staticmethod
     def collect_all_race_info_by_season(event_schedule):
