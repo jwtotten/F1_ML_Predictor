@@ -147,7 +147,12 @@ class RaceDataAnalyzer:
         for race_index, race in enumerate(self.race_data):
             for _, race_info in race.items():
                 if driver_code in race_info:
-                    results.append([race_index + 1, int(race_info[driver_code]["Position"])])
+                    try:
+                        results.append([race_index + 1, int(race_info[driver_code]["Position"])])
+                    except ValueError:
+                        print(f"Invalid position value for driver {driver_code} in race {race_index + 1}")
+                        print(f"Driver Classification: {race_info[driver_code]['Position']}")
+                        print("Omitting result from analysis for now...")
         return results
 
     def present_driver_season_results(self, driver_code: str) -> None:
